@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="box">
-      <div class="header">新手引导</div>
+      <div class="header">
+        <span>新手引导</span>
+        <button class="btn">X</button>
+      </div>
       <div class="body-content">{{ content }}</div>
       <div class="footer">
         <span class="button-footer">
@@ -13,62 +16,44 @@
           </button>
         </span>
       </div>
-      <!-- <button @click="fn()">按钮</button> -->
     </div>
+    <!-- 确认框 -->
+    <div class="box-confirm" v-if="false">
+      <div class="body-content-confirm">{{ content }}</div>
+      <div class="footer">
+        <span class="button-footer">
+          <button type="button" class="cancel" @click="cancel">
+            <span>取消</span>
+          </button>
+          <button type="button" class="confirm" @click="confirm">
+            <span>确定</span>
+          </button>
+        </span>
+      </div>
+    </div>
+    <!-- 确认框 -->
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
+      active: 0,
       content: "",
       dialogVisible: true,
     };
   },
   created() {
     this.content = "第一步rrrrr";
-  },
-  props: {
-    active: {
-      type: Number,
-    },
+    this.$emit("getStep", this.active);
   },
   methods: {
     cancel() {
+      this.active = 0;
       this.$emit("cancelFn");
     },
     confirm() {
-      // if (this.active === 1) {
-      //   this.content = "第二步";
-      // }
-      switch (this.active) {
-        case 0:
-          this.content =
-            "第一步rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr";
-          break;
-        case 1:
-          this.content = "第二步";
-          break;
-        case 2:
-          this.content = "第三步";
-          break;
-        case 3:
-          this.content = "第四步";
-          break;
-        case 4:
-          this.content = "第五步";
-          break;
-        case 5:
-          this.content = "第六步";
-          break;
-        case 6:
-          this.content = "第七步";
-          break;
-        default:
-          break;
-      }
-      console.log(this.active);
-      this.$emit("changeActive");
+      this.$emit("getStep", (this.active += 1));
     },
   },
 };
@@ -81,12 +66,33 @@ export default {
   box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
   box-sizing: border-box;
 }
+
+.box-confirm {
+  position: absolute;
+  top: 40px;
+  width: 500px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+  box-sizing: border-box;
+}
 .header {
   /* background: green; */
+  display: flex;
   padding: 20px 20px 10px;
 }
 .body-content {
-  /* background: orange; */
+  background: orange;
+  height: 100px;
+  padding: 30px 20px;
+  color: #606266;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.body-content-confirm {
+  background: orange;
+  height: 20px;
   padding: 30px 20px;
   color: #606266;
   font-size: 14px;
@@ -151,6 +157,21 @@ export default {
   color: #409eff;
   border-color: #c6e2ff;
   background-color: #ecf5ff;
+}
+
+.btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin-left: auto;
+  width: 18px;
+  color: #909399;
+  font-size: 10px;
+  height: 16px;
+}
+.btn:hover {
+  color: #409eff;
 }
 .confirm:hover {
   background: #66b1ff;

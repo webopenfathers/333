@@ -1,29 +1,23 @@
 <template>
   <div id="app">
-    <div :class="{ mark: markB }">
-      <div class="content" id="js-mark-content-id" v-if="content"></div>
-      <div class="tooltip-box" id="js-tooltip-box-id" v-if="toolTip">
-        <!-- {{ content }}
-
-        <button @click="maskFn">退出遮罩</button> -->
-        <!-- <button @click="activeFn">切换</button> -->
-        <hello-world
-          @changeActive="changeActive"
-          @cancelFn="cancelFn"
-          :active="active"
-        ></hello-world>
-      </div>
+    <div :class="{ mark: markB }" v-if="markB">
+      <hello-world
+        :class="{
+          'hello-world': active === 0,
+          'two-hello': active === 1,
+        }"
+        @getStep="getStep"
+        @cancelFn="cancelFn"
+      />
+      <img
+        :src="srcList[active]"
+        :class="{ oneStep: active === 0, twoStep: active === 1 }"
+      />
     </div>
     <div class="list-box">
-      <div
-        v-for="(item, index) in textArr"
-        class="list-box-item"
-        :class="{ 'js-show-id': active === index }"
-        :key="index"
-      >
+      <div v-for="(item, index) in textArr" class="list-box-item" :key="index">
         {{ item }}
       </div>
-      <button @click="element" class="btn">元素</button>
     </div>
   </div>
 </template>
@@ -33,17 +27,15 @@ import HelloWorld from "./components/HelloWorld.vue";
 export default {
   components: { HelloWorld },
   name: "App",
-  // components: {},
   data() {
     return {
-      //
+      active: null,
       markB: true,
       toolTip: true,
       content: true,
-      //
       contentMark: null,
       showClone: null,
-      active: 0,
+      srcList: [require("./assets/one.jpg"), require("./assets/two.jpg")],
       textArr: [
         "花自飘零bnnnnnnnnnnnnnnnnnn水自流",
         "一种相思",
@@ -54,53 +46,17 @@ export default {
       ],
     };
   },
-  mounted() {
-    console.log(666);
-    this.fn();
-  },
+  mounted() {},
   methods: {
-    element() {
-      console.log("我被点击了");
-    },
     cancelFn() {
       this.markB = false;
-      this.toolTip = false;
-      this.content = false;
     },
-    maskFn() {
-      this.markB = !this.markB;
-    },
-    changeActive() {
-      this.contentMark.removeChild(this.showClone);
-      this.fn();
+    getStep(active) {
+      this.active = active;
+      console.log(active);
     },
     fn() {
-      let show = null;
-      if (this.active <= 5) {
-        show = document.querySelector(".js-show-id");
-      } else {
-        show = document.querySelector(".btn");
-      }
-      this.active == 6 ? (this.active = 0) : (this.active += 1);
-      // 获取到当前要显示的元素
-      const showLeft = show.offsetLeft;
-      console.log(showLeft);
-      const showTop = show.offsetTop;
-      // const showWidth = show.offsetWidth;
-      const showHeight = show.offsetHeight;
-      //设置一个框
-      const contentMark = document.getElementById("js-mark-content-id");
-      contentMark.style.left = showLeft - 3 + "px";
-      contentMark.style.top = showTop - 3 + "px";
-      const showClone = show.cloneNode(show);
-      this.showClone = showClone;
-      this.contentMark = contentMark;
-      contentMark.appendChild(showClone);
-
-      //设置一个提示语
-      const tooltipBox = document.getElementById("js-tooltip-box-id");
-      tooltipBox.style.left = showLeft + "px";
-      tooltipBox.style.top = showTop + showHeight + 15 + "px";
+      this.markB = !this.markB;
     },
   },
 };
@@ -136,39 +92,29 @@ export default {
   background-color: rgba(0, 0, 0, 0.3);
   z-index: 521;
 }
-
-/* 高亮区域 */
-.content {
-  z-index: 1314;
-  border: 1px dashed #fff;
+.hello-world {
   position: absolute;
+  top: 30px;
+  left: 330px;
+}
+.two-hello {
+  position: absolute;
+  top: 30px;
+  left: 410px;
 }
 
-/* 有意见，把肚子里的吐?出来 */
-.tooltip-box {
-  /* height: 26px; */
-  /* line-height: 26px; */
-  display: inline-block;
-  /* background: white; */
-  position: relative;
-  /* -moz-border-radius: 40px;
-  -webkit-border-radius: 40px;
-  border-radius: 40px; */
-  padding: 2px 15px;
-  /* font-size: 14px; */
+.oneStep {
+  width: 308px;
+  position: absolute;
+  top: 62.4px;
+  left: 11px;
 }
 
-/*加个小尾巴*/
-.tooltip-box:before {
-  content: "";
+.twoStep {
+  width: 75px;
+  height: 30px;
   position: absolute;
-  right: 100%;
-  top: -10px;
-  left: 3%;
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 13px solid white;
+  top: 62.4px;
+  left: 324px;
 }
 </style>
